@@ -1,0 +1,103 @@
+# ESERCIZIO 1 
+#
+# File: funzioni.py
+#
+# Author: M. Battiston
+#
+# Version: 1.0
+#
+# Description: Programma per la generazione e l'analisi della sequenza di Collatz (problema 3n + 1). 
+#              Valida gli input dell'utente, calcola valore massimo, lunghezza e somma 
+#              e ricerca i multipli di 5.
+#
+
+# Punto 1
+def is_pari(n):
+    return n % 2 == 0
+
+# Punto 2 
+def num_int() :
+    while True : 
+        try:
+            numero = float(input('Scegli un numero: '))
+
+            if numero != int(numero) :  
+                print('Riprova')
+ 
+            elif numero > 0 :
+                return numero
+
+            else:
+                print('Riprova')
+
+        except ValueError :
+            print('Riprova')
+
+# Punto 3 
+def elenco_numeri():
+    n = int(input('Scegli un numero: '))
+    lista = [n]
+
+    while n != 1 and len(lista) < 100 :   
+        if n % 2 == 0:
+            n = n // 2 
+ 
+        else :
+            n = n*3 + 1 
+        
+        lista.append(n)
+
+    print(lista)
+
+    return lista
+
+# Punto 4
+def analizza_sequenza(lista):
+
+    # Massimo
+    massimo = lista[0]
+    for numero in lista:
+        if numero > massimo:
+            massimo = numero 
+
+    # Lunghezza
+    lunghezza = 0
+    for j in lista:
+        lunghezza += 1
+
+    # Somma di tutti gli elementi
+    somma = 0 
+    for numero in lista:
+        somma += numero
+
+
+    print('Il numero massimo è', massimo)
+    print('La lunghezza raggiunta è', lunghezza)
+    print('La somma di tutti i numeri è', somma)
+
+    return massimo, lunghezza, somma
+
+# Punto 5
+def ricerca(lista):
+    multipli = []
+    for numero in lista: 
+        if numero % 5 == 0:           # Se il numero della è divisibile per 5
+            multipli.append(numero)      # Aggiungi il numero alla lista
+    if multipli:
+        print('I multipli di 5 sono:', multipli)
+
+    else: 
+        print('Non ci sono multipli di 5.')       # Altrimenti
+
+
+    return multipli
+
+
+def main():
+    quanti = int(input('Quanti numeri vuoi testare? '))
+
+    for j in range(quanti): 
+        
+        pezzo = elenco_numeri()
+        analisi = analizza_sequenza(pezzo)
+        ricerche = ricerca(pezzo)    

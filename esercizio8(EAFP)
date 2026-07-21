@@ -1,0 +1,106 @@
+#
+# File: esercizio8(EAFP).py
+#
+# Author: M. Battiston
+#
+# Version: 1.2
+# 
+# Description: Programma per giocare al giocco dell'impiccato
+#              con approccio EAFP
+#
+
+import random
+from esercizio6classe import Rubrica
+
+
+def gioco_impiccato():
+    '''"Gestisce l'esecuzione del gioco dell'impiccato.
+    La funzione carica una lista di parole da un file JSON tramite la classe 
+    Rubrica, ne seleziona una in modo casuale e gestisce l'interazione con 
+    l'utente'''
+    # Carico le parole
+    try:
+        lista_parole = Rubrica([]).apri('rubrica.json')
+        scelta = random.choice(lista_parole.rubrica).lower()
+    except FileNotFoundError:
+        print('File "rubrica.json" non trovato. Impossibile giocare.')
+        return
+    except IndexError:
+        print('La rubrica è vuota. Impossibile giocare.')
+        return
+
+    tentativi = 6
+    lettere_indovinate = list()
+
+    while True:
+        # Mostro la parola mascherata
+        parola_mostrata = ''
+        for lettera in scelta:
+            try:
+                lettere_indovinate.index(lettera)
+                parola_mostrata += lettera
+            except ValueError:
+                parola_mostrata += ' _ '
+        
+        print(f'\nParola: {parola_mostrata}')
+        print(f'Tentativi rimasti: {tentativi}')
+
+        # Controllo se ha vinto
+        try:
+            parola_mostrata.index('_')
+
+        except ValueError:
+            print('\nComplimenti! Hai indovinato la parola.')
+            break
+        
+    
+        # Chiedo una lettera
+        try:
+            guess = input('Inserisci una lettera: ').strip().lower()
+        except (EOFError, KeyboardInterrupt):
+            print('\nGioco interrotto.')
+            return
+
+        # Validazione: se non è valida, sollevo un errore "parlante"
+        try:
+            if not guess.isalpha():
+                raise ValueError('Input non valido')
+            
+            if guess in lettere_indovinate:
+                raise ValueError('Lettera già provata')
+        
+        except ValueError as error:
+            print(f'\nErrore: {error}. Riprova.')
+            continue
+
+        # Se inserisco una parola intera
+        try: 
+            if len(guess) > 1:
+                
+                if guess == scelta:
+                    print('\nComplimenti! Hai indovinato la parola.')
+                    break
+                raise ValueError
+        
+        except ValueError:
+            print('\nLa parola non è corretta.')
+            tentativi -= 1
+            continue
+
+        # Provo a trovare la lettera nella parola
+        try:
+            scelta.index(guess)
+            lettere_indovinate.append(guess)
+            print(f'\n{guess} è nella parola')
+        
+        except ValueError:
+            print(f'\n{guess} non è nella parola. Ritenta.')
+            tentativi -= 1
+
+        if tentativi == 0:
+            print('\nHai finito i tentativi a tua disposizione.')
+            print(f'La parola era: {scelta}')
+            break
+
+
+gioco_impiccato()

@@ -1,0 +1,151 @@
+#
+# File: Otto_regine.py
+#
+# Author: M. Battiston
+#
+# Version: 1.0
+#
+# Description: Example program to solve 8 queen-like problem 
+#              using brute force + random approach
+#
+
+
+def stessa_diagonale(x0, y0, x1, y1):
+    '''Ritorna Vero se posizioni (x0, y0) e (x1, y1) sono sulla stessa "diagonale"
+    '''
+    # distanza lungo y
+    dy = abs(y1 - y0)
+    
+    # distanza lungo x
+    dx = abs(x1 - x0) 
+
+    # se dx == dy , dx/dy == 1 e sono sulla stessa diagonale, boolean expression
+    return dx == dy     
+
+
+def incrocia_colonne(posizioni, col):
+    '''Ritorna Vero se la colonna 'col', che indica la posizione della regina
+      (col, posizioni[col]) incrocia la diagonale di qualcuna 
+      delle posizioni delle regine precedenti 
+    '''
+    # controllo tutte le precedenti fino a questa 'col'
+    for c in range(col):     
+        # la coordinata X (la riga) è indice (c) 
+        # la coordinata Y,(la colonna) è valore lista nell'indice (c)
+        if stessa_diagonale(c, posizioni[c], col, posizioni[col]):
+            # stop se trovo problemi
+            return True  
+    # nessun incrocio, la posizione va bene e NON incrocia altre colonne        
+    return False   
+
+
+def soluzione_ok(soluzione_posizioni):
+    '''Controlla tutte le posizioni della possibile soluzione
+       'soluzione_posizioni' per verificare se ognuna delle posizioni 
+       (colonne dela permatazione) ogni colonna incrocia la diagonale
+       di qualche altra posizione
+    '''
+
+    for col in range(1, len(soluzione_posizioni)):
+        # verifica se incrocia
+        #if incrocia_colonne(soluzione_posizioni, col) == True:
+        if incrocia_colonne(soluzione_posizioni, col):
+            # stop se trova incroci, la soluzione non è valida
+            return False 
+
+    # Se non è ritornato prima, 
+    # allora nessun incrocio trvato: posizioni della soluzione valide 
+    return True 
+
+
+def rotazione_scacchiera(scacchiera):
+    n = len(scacchiera)
+    nuova_scacchiera = [-1] * n                    # Crea una lista [-1, -1, -1, ...]m per indicaare che la scacchiera è vuota
+    for riga, colonna in enumerate(scacchiera):
+        nuova_scacchiera[colonna] = (n -1) - riga
+
+    return nuova_scacchiera
+
+
+import random
+import time 
+
+def main(n, s):       # n = dimensione scacchiera, s = numero di soluzioni da trovare 
+    # inizializzo generatore permutazioni
+    random_generator = random.Random() 
+    
+    tempi_soluzioni = []
+    tentativi_soluzioni = []
+    soluzioni_trovate = 0
+    set_scacchiera = set()
+    doppioni = 0 
+
+    while soluzioni_trovate < s:
+    # preparo la "possibile soluzione" con posizoni da testare
+        scacchiera = list(range(n)) 
+    
+    # conto le soluzioni trovate, inizio da 0           
+        solutions = 0                 
+    
+    # misuro il tempo di partenza per la ricerca della soluzione
+        start_time = time.time()            
+        tentativi = 0
+    # loop finchè non trovo una soluzione
+        while solutions < 1:
+            
+            # permutazione casuale della soluzione 'mescolando' posizioni
+            random_generator.shuffle(scacchiera) 
+            tentativi += 1
+            # verifica se la permutazione casuale e' soluzione  
+            #if soluzione_ok(scacchiera) == True: 
+            if soluzione_ok(scacchiera):                 
+                
+                # Cerco se la soluzione è unica 
+                scacchiera_tupla = tuple(scacchiera)
+                if scacchiera_tupla in set_scacchiera:
+                    doppioni += 1
+                    continue
+                set_scacchiera.add(scacchiera_tupla)
+                
+                end_time = time.time()
+                tempo_impiegato = end_time - start_time  # Durata della ricerca 
+                
+
+                if tempo_impiegato > 15.0:                                        # Se per trovare una soluzione ci impiega più di 15s si ferma il codice 
+                    print(f"ATTENZIONE: Con N = {n} hai superato i 15 secondi")
+                    return
+                
+                tempi_soluzioni.append(tempo_impiegato)  # Inserisci la durata di questa ricerca nella lista 
+                tentativi_soluzioni.append(tentativi)  # Insersci il numero di tentativi che sono stati necessari a trovare la soluzione nella lista 
+                
+            
+                soluzioni_trovate += 1    # Increbento il numero di soluzioni trovate (devo trovarne max 10)
+                # se la soluzione è buona, scrive
+                print(f'Found solution {scacchiera} in {tempo_impiegato} s.')
+
+                # incremento contatore soluzioni trovate (condizione stop loop)
+                solutions += 1      
+            
+                # reset timer ricerca soluzione
+                start_time = time.time()
+
+    tempo_medio = sum(tempi_soluzioni)/len(tempi_soluzioni)
+    print(f'Il tempo medio per trovare una soluzione è {tempo_medio}')
+    print(f'I tentativi per trovare le {s} soluzioni sono i seguenti: {tentativi_soluzioni}')
+    print(f"Durante l'esecuzione del programma sono stati trovati {doppioni} duplicati")
+
+    return set_scacchiera
+    
+
+def stampa_rotazioni(soluzioni):
+    for i, sol in enumerate(soluzioni):
+        sol_lista = list(sol)
+        rotazione_90 = rotazione_scacchiera(sol_lista)
+        rotazione_180 = rotazione_scacchiera(rotazione_90)
+        rotazione_270 = rotazione_scacchiera(rotazione_180)
+
+        print(f'Rotazioni di 0, 90, 180 e 270 della soluzione {i}: {sol_lista}, {rotazione_90}, {rotazione_180}, {rotazione_270}')
+
+# chiamo la funzione principale 
+soluzione = main(8, 5)
+stampa_rotazioni(soluzione)

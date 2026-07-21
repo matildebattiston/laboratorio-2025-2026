@@ -1,0 +1,90 @@
+#
+# File: esercizio3.py
+#
+# Author: M. Battiston
+#
+# Version: 1.0
+#
+# Description: Script con interfaccia a riga di comando (argparse) per 
+#              ordinare, visualizzare e inviare auguri ai contatti in rubrica
+#
+# Punto 7 
+rubrica = {
+  'Paolino Paperino': {'giorno': 9,
+                      'mese': 'giugno',
+                      'anno': 1934,
+                      'età': 93,
+                      'sesso': 'M',
+                      'mail': 'paolino.paperin0@disney.org'},
+'Ron Weasley': {'giorno': 1, 
+                'mese': 'marzo', 
+                'anno': 1980, 
+                'età': 46, 
+                'sesso': 'M', 
+                'mail': 'ron_weasley80@hogwards.uk'},
+'Ramona Flowers': {'giorno': 19, 'mese': 'ottobre', 'anno': 2004, 'età': 22, 'sesso': 'F', 'mail': 'ramona.fls@gmail.com'},
+'Madoka Ayukawa': {'giorno': 25, 'mese': 'maggio', 'anno': 1969, 'età': 57, 'sesso': 'F', 'mail': 'madoka_sax@asahi_net.jp'}
+}
+
+import argparse
+
+def ordine_crescente():            # Crea la lista di nomi in ordine crescente d'età
+    '''Estrae e stampa i nomi degli utenti della rubrica ordinati per età crescente.'''
+    lista_età = [[dati['età'], nome] for nome, dati in rubrica.items()]
+    lista_età.sort()                                #Riordina la lista, in ordine crescente, in base al primo argomento
+    print(f'I nomi in ordine crescente di età:')
+    for age, personaggio in lista_età:
+        print(personaggio)
+
+def ordine_decrescente():          # Crea la lista di nomi in ordine decrescente d'età
+    '''Estrae e stampa i nomi degli utenti della rubrica ordinati per età decrescente.'''
+    lista_età = [[dati['età'], nome] for nome, dati in rubrica.items()]
+    lista_età.sort(reverse=True)
+    print(f'I nomi in ordine decrescente di età:')
+    for age, personaggio in lista_età:
+        print(personaggio)
+
+def auguri(rubrica, nome_utente):
+    '''Genera e stampa un messaggio personalizzato di auguri per l'utente specificato.'''
+    persona = rubrica[nome_utente]
+    if persona['sesso']=='F':
+        print(f'Cara {nome_utente}, sei nata il {persona['giorno']} di {persona['mese']} del {persona['anno']} e quindi a breve compirai {persona['età']} anni. Ti manderemo gli auguri a {persona['mail']}')
+    else:
+        print(f'Caro {nome_utente}, sei nato il {persona['giorno']} di {persona['mese']} del {persona['anno']} e quindi a breve compirai {persona['età']} anni. Ti manderemo gli auguri a {persona['mail']}')
+
+def informazioni():
+    '''Formatta e stampa a schermo tutte le informazioni relative a ciascun utente in rubrica.'''
+    for utente, dati in rubrica.items(): 
+        stringa = f"'{utente}'"
+        for argomento, valore in dati.items():
+            if type(valore) == str:
+                stringa += f", '{argomento}' '{valore}'"
+            else:
+                stringa += f", '{argomento}' {valore}"
+
+        print(stringa)
+
+parser = argparse.ArgumentParser(prog='esercizio3.py',
+                                 description='Visualizza gli utenti e i loro dati, manda messaggio di auguri',
+                                 epilog='Autrice: Matilde Battiston')
+
+parser.add_argument('-r', '--rubrica', action='store_true', help='Visulizza i dati in rubrica')
+
+parser.add_argument('--chiavi', choices=['giorno', 'mese', 'anno', 'età', 'sesso', 'mail'], help="Scegli una chiave")
+
+parser.add_argument('--nome', choices=['Paolino Paperino', 'Ron Weasley', 'Ramona Flowers', 'Madoka Ayukawa'], help='Scegli un utente')
+
+parser.add_argument('-o','--lista_ordinata', action='store_true', help="Visualizza i nomi in ordine crescente d'età")
+
+parser.add_argument('-d','--lista_disordinata', action='store_true', help="Visualizza i nomi in ordine decrescente d'età")
+
+args = parser.parse_args()
+
+if args.lista_ordinata:
+    ordine_crescente()
+elif args.lista_disordinata:
+    ordine_decrescente()
+elif args.rubrica:
+    informazioni()
+else:
+    auguri(rubrica, args.nome)

@@ -1,0 +1,220 @@
+# ESERCIZIO 2 
+#
+# File: esercizio2.pys
+#
+# Author: M. Battiston
+#
+# Version: 1.0
+#
+# Description: Programma per analizzare e modificare un testo
+#              poetico usando liste, stringhe e dizionari
+#
+
+testo = '''
+Day after day, day after day,
+We stuck, nor breath nor motion;
+As idle as a painted ship
+Upon a painted ocean.
+
+Water, water, every where,
+And all the boards did shrink;
+Water, water, every where,
+Nor any drop to drink.
+
+The very deep did rot: O Christ!
+That ever this should be!
+Yea, slimy things did crawl with legs
+Upon the slimy sea.
+
+About, about, in reel and rout
+The death-fires danced at night;
+The water, like a witch's oils,
+Burnt green, and blue and white.
+'''
+
+# Punto 1
+def conta_righe(testo): 
+    ''' Contare le righe non vuote '''
+    lista_righe = testo.split('\n')  # Dividi il testo quando va in una nuova riga
+    lista_righe_non_vuote = [ riga for riga in lista_righe if riga != '']
+    #print(lista_righe_non_vuote)
+    numero_righe = len(lista_righe_non_vuote)
+    print(f'Nel testo sono presenti {numero_righe} righe')
+    return numero_righe
+
+# Punto 2
+def conta_parole_distinte(testo):
+    ''' Contare le parole che compongono l'estratto '''
+    lista_parole = [parola.strip(',;.:!').lower() for parola in testo.split()]
+    set_parole = set(lista_parole)
+    #print(set_parole)
+    numero_parole = len(set_parole)
+    print(f'Nel testo sono presenti {numero_parole} parole diverse')
+    return numero_parole
+
+
+# Punto 3 
+def caratteri_alfanumerici(testo):
+    ''' Contate i caratteri alfanumerici che compongono l’estratto '''
+    lista_caratteri_alfanum = [lettera.lower() for lettera in testo if lettera.isalnum()]
+    caratteri = set(lista_caratteri_alfanum)
+    #print(caratteri)
+    numero_caratteri = len(caratteri)
+    print(f'Nel testo ci sono {numero_caratteri} caratteri alfanumerici')
+    return numero_caratteri
+
+
+# Punto 4 
+def conta_lettere(testo):
+    ''' Chiedere all’utente una lettera e contate quante volte compare nel testo '''
+# Distinzione tra maiuscolo e minuscolo
+
+    lettera_scelta = input('Scegli una lettera: ').lower().strip()
+    numero_lettere = testo.count(lettera_scelta)
+    print(f'Nel testo ci sono {numero_lettere} lettere {lettera_scelta}')
+    return numero_lettere
+
+
+# Punto 5
+def sostituzione_parole(testo):
+    ''' Sostituite tutte le parole day, water e about con la parola PYTHON in tutti i versi '''
+
+    righe = testo.split('\n')                        # Dividi il testo in righe 
+    lista_da_cercare = ['day', 'water', 'about']
+    testo_PYTHON = ''
+    for riga in righe:
+        if riga == '':                               # Se la riga è vuota, vai a capo
+            testo_PYTHON += '\n'
+
+        else:
+            lista_parole = riga.split()                               # Dividi il testo in parole
+            verso_elaborato = ''
+            for i in range(len(lista_parole)):
+                parola = lista_parole[i]
+                if 'day' in parola.lower() or 'water' in parola.lower() or 'about' in parola.lower():
+                    parola_sostituire = parola.lower().replace('day','PYTHON').replace('water', 'PYTHON').replace('about', 'PYTHON')
+                    verso_elaborato += ' ' + parola_sostituire
+                else:
+                    verso_elaborato += ' ' + parola 
+
+            testo_PYTHON = testo_PYTHON + verso_elaborato + '\n'          
+
+    print(testo_PYTHON)
+    return testo_PYTHON
+
+
+# Punto 6
+def parole_dispari_maiuscole(testo):
+    '''Riscrivere il testo in modo che tutte le parole in posizione dispari siano scritte in maiuscolo'''
+
+    righe = testo.split('\n')                        # Dividi il testo in righe 
+    testo_elaborato = ''
+    for riga in righe:
+        if riga == '':                               # Se la riga è vuota, vai a capo
+            testo_elaborato  += '\n'
+
+        else:
+            lista_parole = riga.split()                               # Dividi il testo in parole
+            verso_elaborato = ''
+            for i in range(len(lista_parole)):
+                if i % 2 != 0:                                        # Le parole in posizione dispari le scrivi in maiuscolo
+                    parola_maiuscola = lista_parole[i].upper()             
+                    verso_elaborato += ' ' + parola_maiuscola         # Aggiungi la parola al nuovo verso
+
+                else:
+                    parola = lista_parole[i]                           # Altrimenti aggiungi la parola così com'è
+                    verso_elaborato += ' ' + parola 
+
+            testo_elaborato = testo_elaborato + verso_elaborato + '\n'          
+
+    print(testo_elaborato)
+    return testo_elaborato
+
+
+# Punto 7 
+def inverti_ordine_frase(testo):
+    '''Riscrivere il testo invertendo l’ordine delle frasi dal basso all’alto.'''
+    righe = testo.splitlines()
+    for i in range(len(righe)):
+        nuova_riga = righe[::-1]
+    testo_contrario = '\n'.join(nuova_riga)
+
+# Punto 8 
+def secondo_verso_invertito(testo):
+    '''Riscrivete il testo in modo che il secondo verso di ogni strofa sia scritto a specchio '''
+    strofe = testo.strip().split('\n\n')
+    strofe_modificate = []
+
+    for strofa in strofe:
+        versi = strofa.splitlines()
+        if len(versi) >= 2:
+            versi[1] = versi[1][::-1]  # Inverte la seconda riga
+        strofe_modificate.append("\n".join(versi))
+
+    risultato = "\n\n".join(strofe_modificate)
+    print(risultato)
+    return risultato
+
+# Punto 9
+def parole_ricorrenti(testo):
+    '''Trovate eventuali parole che compaiono in tutte le strofe'''
+    testo_pulito = testo.lower().replace(',', '').replace('.', '').replace(';', '').replace('!', '')
+    lista_strofe_non_vuote = [strofa.split() for strofa in testo_pulito.split('\n\n') if strofa.strip()]
+    insieme_righe = [set(strofa) for strofa in lista_strofe_non_vuote]
+
+    risultato = insieme_righe[0]
+    for j in insieme_righe[1:]:
+        risultato = risultato & j 
+    if risultato == set():
+        print(f'Non ci sono parole ricorrenti')
+    else:
+        print(f'Parole ricorrenti:', risultato)
+
+# Punto 10
+def lista_parole(testo):
+    '''Create la lista univoca di tutte le parole che compaiono nel testo, ordinatela per lunghezza delle parole e visualizzatela'''
+    lista_parole = [parola.strip(',;.:!').lower() for parola in testo.split()]
+    set_parole = list(set(lista_parole))
+    set_parole.sort(key=len)
+    print(set_parole)
+
+# Punto 11
+def dizionario_caratteri(testo):
+    '''Create un dizionario che mappi OGNI carattere (chiave) con la sua occorrenza nel testo (valore) e visualizzatelo'''
+    dizionario_caratteri= {}
+    for carattere in testo:
+        if carattere in dizionario_caratteri:
+            dizionario_caratteri[carattere] += 1
+        else:
+            dizionario_caratteri[carattere] = 1 
+    print(dizionario_caratteri) 
+    return dizionario_caratteri
+
+# Punto 12
+def dizionario_caratteri_alfanum(testo):
+    '''Create un dizionario come il precedente per i soli caratteri alfanumerici (no caratteri speciali), ignorando maiuscole e minuscole'''
+    dizionario_caratteri_alfanum = {}
+    for carattere in testo.lower():
+        if carattere.isalnum():
+            if carattere in dizionario_caratteri_alfanum:
+                dizionario_caratteri_alfanum[carattere] += 1
+            else:
+                dizionario_caratteri_alfanum[carattere] = 1
+    print(dizionario_caratteri_alfanum)
+
+def main():
+    '''Esegue tutti i punti dell'esercizio'''
+    conta_righe(testo)
+    conta_parole_distinte(testo)
+    caratteri_alfanumerici(testo)
+    conta_lettere(testo)
+    sostituzione_parole(testo)
+    parole_dispari_maiuscole(testo)
+    inverti_ordine_frase(testo)
+    secondo_verso_invertito(testo)
+    parole_ricorrenti(testo)
+    lista_parole(testo)
+    dizionario_caratteri(testo)
+    dizionario_caratteri_alfanum(testo)
+
+main()

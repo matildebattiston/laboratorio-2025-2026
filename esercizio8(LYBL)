@@ -1,0 +1,92 @@
+#
+# File: esercizio8(LBYL).py
+#
+# Author: M. Battiston
+#
+# Version: 1.0
+#
+# Description: Programma per giocare al giocco dell'impiccato
+#              con approccio LYBL
+#
+
+import random
+from esercizio6classe import Rubrica
+
+def gioco_impiccato():
+    '''"Gestisce l'esecuzione del gioco dell'impiccato.
+    La funzione carica una lista di parole da un file JSON tramite la classe 
+    Rubrica, ne seleziona una in modo casuale e gestisce l'interazione con 
+    l'utente'''
+
+    lista = Rubrica([])
+    lista_parole = lista.apri('rubrica.json')
+
+    if len(lista_parole.rubrica) == 0:
+        print('La lista delle parole è vuota.')
+        return 
+
+    scelta = random.choice(lista_parole.rubrica).lower()
+    tentativi = 6
+
+    lettere_indovinate = set()
+    lettere_parole_provate = set()
+
+    while True:
+
+        parola_indovinata = ''
+        #ciclo per costruire la parola
+        for lettere in scelta:
+            if lettere in lettere_indovinate:
+                parola_indovinata += lettere + ''
+            else:
+                parola_indovinata += ' _ '
+
+        print(f'\nParola da indovinare: {parola_indovinata}')
+        print(f'Numero di tentativi rimasti: {tentativi}')
+        print(f'Lettere e parole provate: {lettere_parole_provate}')
+
+        if parola_indovinata == scelta:                             # Se hai indovinato tutto le lettere e composto la parola il gioco finisce 
+            print('\nHai indovinato la parola. Il gioco è finito.')
+            break
+
+        guess = input('\nHo scelto una parola, prova ad indovinarla. Scegli una lettera o indovinala: ').lower()
+
+        # gestisto gli errori
+
+        if not guess.isalnum():                  # Se non è una lettera non è valido
+            print('\nFormato non valido.')
+            continue
+    
+        if guess in lettere_parole_provate:                                   # Se hai già provato quella lettera allora ritenta
+            print('\nHai gia provato questa lettera. Scegline un altra.')
+            continue 
+
+        lettere_parole_provate.add(guess)
+    
+        # parole e lettere indovinate e non    
+        if len(guess) > 1:        # Se inserisco più di una lettera la conto come parola
+        
+            if guess == scelta:               
+                print('\nHai indovinato!')
+                break
+        
+            else:
+                print('\nMi dispiace, non è nella parola. Ritenta.')
+                tentativi -= 1
+                
+        else:                      # Se inserisco una sola lettera
+            if guess in scelta:
+                lettere_indovinate.add(guess)
+                print(f'\n{guess} è nella parola')    
+    
+    
+            else:
+                print(f'\n{guess} non è nella parola. Ritenta.')
+                tentativi -= 1
+    
+        if tentativi == 0:
+            print('\nHai finito i tentativi a tua disposizione.')
+            print(f'La parola era: {scelta}')
+            break
+
+gioco_impiccato()

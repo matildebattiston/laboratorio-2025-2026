@@ -1,0 +1,116 @@
+#
+# File: esercizio6classe.py
+#
+# Author: M. Battiston
+#
+# Version: 1.0
+#
+# Description: Classe Rubrica per caricare, gestire e salvare 
+#              i contatti da e verso file .json o .txt
+#
+
+import json
+
+class Rubrica:
+    def __init__(self, rubrica):
+        ''' Inizializzo la rubrica con un dizionario '''
+        self.rubrica = rubrica
+        self.nome_file = ''
+
+    @classmethod
+    def inizializza_file_JSON(cls, nome_file):
+        ''' Crea una Rubrica a partire da un dile JSON '''
+        with open(nome_file, 'r') as file:
+            data = json.load(file)
+        istanza = cls(data)
+        istanza.nome_file = nome_file
+        return istanza
+
+    @classmethod 
+    def iniziailizza_file_txt(cls, nome_file):
+        ''' Creare una Rubrica a partire da un file .txt'''
+        dizionario_temporaneo = {}
+        with open(nome_file, 'r' ) as file_lettura:
+            contenuto = file_lettura.read()
+
+        righe  = contenuto.split('\n')
+        for riga in righe:
+            riga = riga.strip()
+            if not riga:
+                continue
+
+            info = riga.split(',')
+            utente = info[0]
+            giorno = info[1]
+            mese = info[2]
+            anno = info[3] 
+            età = info[4]
+            sesso = info[5]
+            mail = info[6]
+
+            dizionario_temporaneo[utente] = {'giorno': giorno, 'mese': mese, 'anno':anno, 'età': età, 'sesso': sesso, 'mail': mail}
+        
+        istanza = cls(dizionario_temporaneo)
+        istanza.nome_file = nome_file
+        return istanza
+    
+    @classmethod
+    def apri(cls, nome_file):
+        '''Apre e inizializza un file di rubrica in base alla sua estensione.'''
+        if 'json' in nome_file:
+            return cls.inizializza_file_JSON(nome_file)
+        elif 'txt' in nome_file:
+            return cls.iniziailizza_file_txt(nome_file)
+
+    
+    def aggiungi(self, utente, dati):
+        '''Aggiungere un contatto alla rubrica già aperta'''
+        if self.rubrica is not None:
+            self.rubrica[utente] = dati
+            print(f'Utente aggiunto con successo.')
+        else:
+            print('Prima apri una rubrica')
+
+    def rimuovi(self, nome):
+        ''' Rimuovere un conatatto se la rubrica non è vuota e se il nome si trova in essa '''
+        if self.rubrica:                    # dizionario vuoto viene considerato false --> non esiste
+            if nome in self.rubrica:
+                del self.rubrica[nome]
+                print(f'{nome} rimosso con successo.')
+
+            else:
+                print('Il nome NON esite')
+        else:
+            print('La rubrica è vuota')
+
+    def salva(self):
+        ''' Salvare la rubrica non vuota su file '''
+        if self.nome_file:
+            if '.json' in self.nome_file:
+                with open(self.nome_file, 'w') as file:
+                    json.dump(self.rubrica, file, indent=4)
+                print('File JSON salvato con successo')
+
+            elif '.txt' in self.nome_file:
+                with open(self.nome_file, 'w') as file_txt:
+                    for utente, dati in self.rubrica.items():
+                        file_txt.write(f'{utente}')
+                        for info in dati.values():
+                            file_txt.write(f', {info}')
+                        file_txt.write('\n')
+                print('File txt salvato con successo')
+
+        else:
+            print('La rubrica è vuota')
+
+    def stampa(self, nome):
+        ''' Stampa le informazioni del contatto scelto '''
+        if self.rubrica:
+            if nome in self.rubrica:
+                info = self.rubrica[nome]
+                print(info['giorno'], info['mese'], info['anno'], info['età'], info['sesso'], info['mail'])
+            else:
+                print('Utente non trovato in rubrica')
+        else:
+            print('Errore: la rubrica è vuota')
+

@@ -1,0 +1,63 @@
+#
+# File: esercizio4.py
+#
+# Author: M. Battiston
+#
+# Version: 1.0
+#
+# Description: Funzioni per salvare e leggere i dati di una rubrica
+#              sia in formato testo (.txt) sia in formato JSON (.json)
+#
+import json
+
+def salva_rubrica(rubrica, nome_file='rubrica.txt'):
+    '''Salva i dati della rubrica in formato testuale (valori separati da virgola).'''
+    with open('rubrica.txt', 'w') as file_rubrica:     # Scrivo un file con i dati dell'utente 
+        for utente, dati in rubrica.items():
+            file_rubrica.write(f'{utente}')             # Scrivo il nome degli utenti 
+            for valore in dati.values():                # Itero sui valori dei dizionari annidati 
+                file_rubrica.write(f', {valore}')       # Scrivo i dati degli utenti 
+            file_rubrica.write('\n')                    # Vado a capo per ogni utente 
+
+def leggi_file_txt(nome_file = 'rubrica.txt'):
+    with open('rubrica.txt', 'r') as file_lettura:        # Leggo e stampo il contenuto del file 
+        contenuto = file_lettura.read()
+    return contenuto 
+
+def salva_rubrica_json(rubrica, nome_file='rubrica.json'):
+    with open('rubrica.json', 'w') as file_scrittura:          # Salvo il dizionario con la sua struttura originale in un file json
+        json.dump(rubrica, file_scrittura)
+
+def leggi_file_json(nome_file='rubrica.json'):
+    with open('rubrica.json', 'r') as lettura_rubrica:        # Leggo e stampo il file 
+        data = json.load(lettura_rubrica)
+    return data 
+
+def main():
+    '''Funzione principale che esegue il flusso del programma.'''
+    rubrica = {
+    'Paolino Paperino': {'giorno': 9,
+                      'mese': 'giugno',
+                      'anno': 1934,
+                      'età': 93,
+                      'sesso': 'M',
+                      'mail': 'paolino.paperin0@disney.org'},
+    'Ron Weasley': {'giorno': 1, 
+                'mese': 'marzo', 
+                'anno': 1980, 
+                'età': 46, 
+                'sesso': 'M', 
+                'mail': 'ron_weasley80@hogwards.uk'},
+    'Ramona Flowers': {'giorno': 19, 'mese': 'ottobre', 'anno': 2004, 'età': 22, 'sesso': 'F', 'mail': 'ramona.fls@gmail.com'},
+    'Madoka Ayukawa': {'giorno': 25, 'mese': 'maggio', 'anno': 1969, 'età': 57, 'sesso': 'F', 'mail': 'madoka_sax@asahi_net.jp'}
+    }
+
+    print("Salvataggio e lettura file txt")
+    salva_rubrica(rubrica, 'rubrica.txt')
+    contenuto_txt = leggi_file_txt('rubrica.txt')
+    print(contenuto_txt)
+
+    print("Salvataggio e vettura file json")
+    salva_rubrica_json(rubrica, 'rubrica.json')
+    dati_json = leggi_file_json('rubrica.json')
+    print(dati_json)

@@ -1,0 +1,51 @@
+#
+# File: Main_Tic_Tac_Toe.py
+#
+# Author: M. Battiston
+#
+# Version: 1.0
+#
+# Description: Script principale per avviare ed eseguire una partita 
+#              interattiva a Tris (TicTacToe) da terminale
+#
+
+from classe_Tic_Tac_Toe import TicTacToe
+
+def gioca():
+    '''Gestisce il flusso principale della partita di TicTacToe.
+
+    Consente la scelta del giocatore iniziale, coordina i turni chiedendo
+    gli input di riga e colonna, gestisce le eccezioni per input non validi
+    e controlla lo stato della partita (vittoria, pareggio o proseguimento). '''
+    
+    g = input('Chi inizia? "O" oppure "X"? ').strip().upper()
+    if not g in ['X', 'O']:
+        g = 'X'
+    gioco = TicTacToe(g)
+    while True:
+        
+        print(f'\nTurno del giocatore: {gioco.giocatore_corrente}')
+        gioco.stampa_tabella()
+        try:
+            r = int(input(f'Scegli la riga in cui inserire {g} tra (0-2): '))
+            c = int(input(f'Scegli la colonna in cui inserire {g} tra (0-2): '))
+        except ValueError:
+            print('\nFormato non valido. Inserire un numero tra 0 e 2')
+
+        try:
+            if gioco.mossa(r, c):
+                if gioco.controlla_vittoria():
+                    print(f'\nIl gioco è terminato! {gioco.giocatore_corrente} ha vinto!')
+                    gioco.stampa_tabella()
+                    break
+                elif gioco.tabella_piena():
+                    print('\nPareggio!')
+                    gioco.stampa_tabella()
+                    break
+            
+                gioco.cambio_giocatore()
+
+        except UnboundLocalError:
+            pass
+                
+gioca()

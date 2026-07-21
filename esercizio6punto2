@@ -1,0 +1,90 @@
+#
+# File: Gestione_rubrica_CLI.py
+#
+# Author: M. Battiston
+#
+# Version: 1.0
+#
+# Description: Interfaccia a riga di comando (CLI) per gestire la rubrica:
+#              carica, aggiunge, rimuove, salva e stampa i contatti
+#
+
+from esercizio6classe import Rubrica
+
+def gestisci_rubrica():
+    """Gestisce un'interfaccia a riga di comando (CLI) per la manipolazione di una Rubrica.
+
+    La funzione permette all'utente di eseguire le seguenti operazioni:
+    - apri: Carica dati da un file `.json` o `.txt`.
+    - aggiungi: Inserisce un nuovo contatto con i relativi dettagli (data di nascita, età, sesso, email).
+    - rimuovi: Elimina un contatto esistente.
+    - salva: Salva lo stato corrente della rubrica nel file specificato.
+    - stampa: Visualizza le informazioni di un singolo contatto.
+    - exit: Termina l'esecuzione del programma.
+
+    I dati vengono associati all'oggetto `Rubrica` importato da `esercizio6classe`.
+    """
+    rubrica = Rubrica()
+  
+    while True:
+        scelta = input('Che operazione vuoi svolgere: apri, aggiungi, rimuovi, salva, stampa? Oppure per uscire scrivi: exit. ')
+        if scelta.strip().lower() == 'exit':
+            print('Uscita dal programma')
+            break
+
+        elif scelta.strip().lower() == 'apri':
+            formato = input('Quale formato vuoi aprire: txt o json? ')
+            if formato.lower().strip() == 'json':
+                try:
+                    rubrica.nome_file = 'rubrica.json'
+                    rubrica = Rubrica.apri('rubrica.json')
+                    print('File aperto con successo.')
+
+                except FileNotFoundError:
+                    print('Il file non esite')
+        
+            elif formato.lower().strip() == 'txt':
+                try:
+                    rubrica.nome_file = 'rubrica.txt'
+                    rubrica = Rubrica.apri('rubrica.txt')
+                    print('File aperto con successo.')
+
+                except FileNotFoundError:
+                    print('Il file non esiste')
+            else:
+                print('Formato non valido')
+
+        elif scelta.strip().lower() == 'aggiungi':
+            utente = input("Qual è il nome dell'utente che vuoi inserire? ")
+            giorno = input('Giorno di nascita: ').strip()
+            mese = input('Mese di nascita: ').strip().lower()
+            anno = input('Anno di nascita: ').strip()
+            età = input("Quanti anni ha l'utente? ")
+            sesso = input("Sesso dell'utente: M o F? ").strip().upper()
+            mail = input("E-mail dell'utente: ").strip()
+            dizionario_dati = {'giorno': giorno, 'mese': mese, 'anno': anno, 'età': età, 'sesso': sesso, 'mail': mail}
+            rubrica.aggiungi(utente, dizionario_dati)
+
+        elif scelta.strip().lower() == 'rimuovi':
+            utente = input('Quale utente vuoi calcellare? ')
+            rubrica.rimuovi(utente)
+
+        elif scelta.strip().lower() == 'salva':
+            if rubrica.nome_file == '':
+                formato = input('In che formato vuoi dìsalvare il file: json o txt? ').strip().lower()
+                if formato == 'json':
+                    rubrica.nome_file = 'rubrica.json'
+
+                elif formato == 'txt':
+                    rubrica.nome_file = 'rubrica.txt'
+
+            else:
+                print('Formato non valido')
+
+            rubrica.salva()
+
+        elif scelta.strip().lower() == 'stampa': 
+            utente = input('Scegli un contatto di cui vuoi sapere le informazioni: ')
+            rubrica.stampa(utente)
+
+gestisci_rubrica()

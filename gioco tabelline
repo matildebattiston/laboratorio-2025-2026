@@ -1,0 +1,60 @@
+# ESERCIZIO 7
+#
+# File: gioco_tabelline.py
+#
+# Author: M. Battiston
+#
+# Version: 1.0
+#
+# Description: Gioco interattivo sulle tabelline che usa un generatore 
+#              per creare la sequenza e gestire tentativi e vite
+#
+
+def generatore_tabelline(n):
+    '''Genera una sequenza infinita corrispondente alla tabellina del numero fornito.'''
+
+    m=0
+    while True:
+        yield m * n
+        m +=1
+
+def gioco_tabelline():
+    '''Avvia il gioco interattivo per indovinare i numeri della tabellina.
+
+    La funzione richiede all'utente un numero base, inizializza un generatore
+    e permette all'utente di indovinare la sequenza ordine per ordine.
+    L'utente ha 5 vite a disposizione prima del game over e può uscire digitando 'exit'.'''
+    
+    while True:
+        try:
+            n = int(input('Scegli un numero: '))
+            break
+        except ValueError:
+            print('Errore! Deve essere un numero!')
+  
+        
+    g = generatore_tabelline(n)
+    vite = 5
+
+    while True: 
+        try:
+            tentativo = input(f'Il generatore crea la tabellina del numero {n}. Hai {vite} vite. Digita exit per uscire o indovina il numero corrente: ')
+            if tentativo.lower().strip() == 'exit':
+                break
+        
+            risposta = int(tentativo)
+            if  risposta == next(g):                           # Il valore da indovinaare cambia ogni volta che l'utente prova ad indovinare 
+                print('Bravo! Hai indovinato!')
+
+            else:
+                vite -= 1
+                if vite == 0:
+                    print('Hai finito le vite!!')
+                    break
+                else:
+                    print('Ritenta sarai più fortunato')
+        
+        except ValueError:
+            print('Formato non supportato. Ritenta.')
+
+

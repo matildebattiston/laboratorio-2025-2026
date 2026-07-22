@@ -47,3 +47,5 @@ def gioca():
 
         except UnboundLocalError:
             pass
+
+gioca()

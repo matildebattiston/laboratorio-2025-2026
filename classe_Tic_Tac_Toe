@@ -8,7 +8,7 @@
 # Description: Classe per gestire la logica del gioco del Tris (TicTacToe):
 #              controllo delle mosse, cambio turno, verifica della vittoria e pareggio.
 #
-import turtle 
+
 class TicTacToe:
     '''Classe che rappresenta e gestisce una partita a Tris (TicTacToe)'''
     def __init__(self, giocatore_iniziale):
@@ -18,57 +18,18 @@ class TicTacToe:
                         [' ', ' ', ' ']]
         
         self.giocatore_corrente = giocatore_iniziale
-        # Impostiamo lo schermo
-        self.window = turtle.Screen()
-        self.window.bgcolor('white')
-        self.window.setup(width=300, height=300)
-
-        # Creiamo la penna
-        self.penna = turtle.Turtle()
-        self.penna.color('black') 
-        self.penna.hideturtle()
-
-    def stampa_tabella(self):
-        self.penna.penup()
-        self.penna.goto(50, -150)
-        self.penna.pendown()
-        self.penna.goto(50, 150)
-
-        self.penna.penup()
-        self.penna.goto(-50, 150)
-        self.penna.pendown()
-        self.penna.goto(-50, -150)
-
-        self.penna.penup()
-        self.penna.goto(-150, -50)
-        self.penna.pendown()
-        self.penna.goto(150, -50)
-
-        self.penna.penup()
-        self.penna.goto(-150, 50)
-        self.penna.pendown()
-        self.penna.goto(150, 50)
-
-    def disegna_simbolo(self, riga, colonna, simbolo):
-        x =  -100 + (colonna * 100)
-        y = 100 - (riga * 100) - 55
-  
-        self.penna.penup()
-        self.penna.goto(x,y)
-        self.penna.write(simbolo, align='center', font=("Arial", 70, "bold"))
 
     def mossa(self, riga, colonna):
         '''Verifica la validità di una mossa ed esegue l'inserimento del simbolo'''
 
-        if colonna < 0 or colonna > 2 or riga < 0 or riga > 2:     # Errore se sceglie una posizione fuori dalla tabella
+        if colonna < 0 or colonna > 3 or riga < 0 or riga > 3:
             print('Posizione non valida: fuori dalla tabella.')
             return False
-        elif self.tabella[riga][colonna] == ' ':                         # Se è vuota allora si può inserire 
+        elif self.tabella[riga][colonna] == ' ':
             self.tabella[riga][colonna] = self.giocatore_corrente
-            self.disegna_simbolo(riga, colonna, self.giocatore_corrente)    # Poi lo inserisce nella tabella 
             return True
         else:
-            print('Casella già occupata')                  
+            print('Casella già occupata')
             return False
 
     def cambio_giocatore(self):
@@ -108,3 +69,19 @@ class TicTacToe:
                     return False            # La tabella non è piena 
         return True                       # Tabella piena, non ci sono spazi vuoti 
 
+    def stampa_tabella(self):
+        '''Mostriamo la griglia nel terminale'''
+        print('\n     0   1   2 ')
+        print()
+ 
+        for i in range(3):
+            r0 = str(self.tabella[i][0])
+            r1 = str(self.tabella[i][1])
+            r2 = str(self.tabella[i][2])
+
+            print(f'{i}    {r0} | {r1} | {r2}')
+
+            if i < 2:
+                print('    -----------')
+
+        print()
